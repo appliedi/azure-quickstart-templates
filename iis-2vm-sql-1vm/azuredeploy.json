@@ -65,6 +65,29 @@
       ],
       "defaultValue": 1
     },
+	    "webVMSku": {
+      "type": "string",
+      "allowedValues": [
+       "2008-R2-SP1",
+"2008-R2-SP1-smalldisk",
+"2012-Datacenter",
+"2012-Datacenter-smalldisk",
+"2012-R2-Datacenter",
+"2012-R2-Datacenter-smalldisk",
+"2016-Datacenter",
+"2016-Datacenter-Server-Core",
+"2016-Datacenter-Server-Core-smalldisk",
+"2016-Datacenter-smalldisk",
+"2016-Datacenter-with-Containers",
+"2016-Datacenter-with-RDSH",
+"2016-Nano-Server"
+      ],
+      "metadata": {
+        "description": "The OS choice for the Web VM Created"
+      },
+      "defaultValue": "2012-R2-Datacenter"
+    },
+	
     "sqlVMSize": {
       "type": "string",
       "allowedValues": [
@@ -621,7 +644,7 @@
           "imageReference": {
             "publisher": "MicrosoftWindowsServer",
             "offer": "WindowsServer",
-            "sku": "2012-R2-Datacenter",
+            "sku": "[parameters('webVMSku')]",
             "version": "latest"
           },
           "osDisk": {

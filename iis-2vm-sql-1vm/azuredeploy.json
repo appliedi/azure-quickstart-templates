@@ -82,6 +82,49 @@
       },
       "defaultValue": "Standard_DS3"
     },
+	"sqlVMOffer": {
+      "type": "string",
+      "allowedValues": [
+	  "SQL2008R2SP3-WS2008R2SP1",
+"SQL2012SP2-WS2012",
+"SQL2012SP2-WS2012R2",
+"SQL2012SP3-WS2012R2",
+"SQL2012SP3-WS2012R2-BYOL",
+"SQL2014-WS2012R2",
+"SQL2014SP1-WS2012R2",
+"SQL2014SP1-WS2012R2-BYOL",
+"SQL2014SP2-WS2012R2",
+"SQL2014SP2-WS2012R2-BYOL",
+"SQL2016-WS2012R2",
+"SQL2016-WS2012R2-BYOL",
+"SQL2016-WS2016",
+"SQL2016SP1-WS2016",
+"SQL2016SP1-WS2016-BYOL",
+"SQL2017-RHEL7",
+"SQL2017-RHEL73",
+"SQL2017-SLES12SP3",
+"SQL2017-Ubuntu1604",
+"SQL2017-WS2016"
+      ],
+      "metadata": {
+        "description": "The offer of the SQL VM Created"
+      },
+      "defaultValue": "SQL2014-WS2012R2"
+    },
+	"sqlVMSkus": {
+      "type": "string",
+      "allowedValues": [
+	 "Enterprise",
+	 "Express",
+	 "SQLDEV",
+	 "Standard",
+	 "Web"
+      ],
+      "metadata": {
+        "description": "The SKU of the SQL VM Created"
+      },
+      "defaultValue": "Web"
+    },	
     "storageAccountType": {
       "type": "string",
       "allowedValues": [
@@ -116,8 +159,8 @@
     "sqlPublicIP": "[concat(parameters('envPrefixName'), 'SqlPip')]",
     "sqlPublicIPRef": "[resourceId('Microsoft.Network/publicIPAddresses', variables('sqlPublicIP'))]",
     "sqlImagePublisher": "MicrosoftSQLServer",
-    "sqlImageOffer": "SQL2014SP2-WS2012R2",
-    "sqlImageSku": "Standard",
+    "sqlImageOffer": "[parameters('sqlVMOffer')]",
+    "sqlImageSku": "[parameters('sqlVMSkus')]",
     "webSrvName": "[concat(parameters('envPrefixName'), 'webSrv')]",
     "webSrvVMSize": "[parameters('webSrvVMSize')]",
     "webSrvOSDiks": "[concat(parameters('envPrefixName'), 'WebSrvOS')]",

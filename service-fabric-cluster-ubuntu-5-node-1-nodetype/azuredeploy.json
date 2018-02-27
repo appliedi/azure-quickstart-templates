@@ -1,5 +1,5 @@
 {
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "location": {
@@ -27,6 +27,34 @@
       "type": "securestring",
       "metadata": {
         "description": "Remote desktop user password. Must be a strong password"
+      }
+    },
+    "vmImagePublisher": {
+      "type": "string",
+      "defaultValue": "Microsoft.Azure.ServiceFabric",
+      "metadata": {
+        "description": "VM image publisher"
+      }
+    },
+    "vmImageOffer": {
+      "type": "string",
+      "defaultValue": "UbuntuServer",
+      "metadata": {
+        "description": "VM image offer"
+      }
+    },
+    "vmImageSku": {
+      "type": "string",
+      "defaultValue": "16.04",
+      "metadata": {
+        "description": "VM image SKU"
+      }
+    },
+    "vmImageVersion": {
+      "type": "string",
+      "defaultValue": "6.0.11",
+      "metadata": {
+        "description": "VM image version"
       }
     },
     "loadBalancedAppPort1": {
@@ -59,7 +87,7 @@
         "description": "Certificate Thumbprint"
       }
     },
-    "sourceVaultId": {
+    "sourceVaultValue": {
       "type": "string",
       "metadata": {
         "description": "Resource Id of the key vault, is should be in the format of /subscriptions/<Sub ID>/resourceGroups/<Resource group name>/providers/Microsoft.KeyVault/vaults/<vault name>"
@@ -89,10 +117,28 @@
       "metadata": {
         "description": "Instance count for node type"
       }
+    },
+    "nodeDataDrive": {
+      "type": "string",
+      "defaultValue": "Temp",
+      "allowedValues": [
+        "OS", "Temp"
+      ],
+      "metadata": {
+        "description": "The drive to use to store data on a cluster node."
+      }
+    },
+    "nodeTypeSize": {
+      "type": "string",
+      "defaultValue": "Standard_D2_v2",
+      "metadata": {
+        "description": "The VM size to use for cluster nodes."
+      }
     }
   },
   "variables": {
     "vmNodeType0Name": "nodetype0-vm",
+    "vmNodeType0Size": "[parameters('nodeTypeSize')]",
     "virtualNetworkName": "VNet",
     "nicName": "NIC",
     "lbIp0Name": "PublicIP-LB-FE-0",
@@ -363,6 +409,7 @@
                   "settings": {
                     "clusterEndpoint": "[reference(parameters('clusterDnsName')).clusterEndpoint]",
                     "nodeTypeRef": "[variables('vmNodeType0Name')]",
+                    "dataPath": "[concat(if(equals(parameters('nodeDataDrive'), 'OS'), '', '/mnt'), '/sfroot')]",
                     "durabilityLevel": "Bronze",
                     "certificate": {
                       "thumbprint": "[parameters('certificateThumbprint')]",
@@ -428,7 +475,7 @@
             "secrets": [
               {
                 "sourceVault": {
-                  "id": "[parameters('sourceVaultId')]"
+                  "id": "[parameters('SourceVaultValue')]"
                 },
                 "vaultCertificates": [
                   {
@@ -453,7 +500,7 @@
         }
       },
       "sku": {
-        "name": "Standard_D2_v2",
+        "name": "[variables('vmNodeType0Size')]",
         "capacity": "[parameters('nt0InstanceCount')]",
         "tier": "Standard"
       },

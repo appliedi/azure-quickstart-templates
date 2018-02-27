@@ -1,21 +1,21 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",  
+  "contentVersion": "1.0.0.0",
   "parameters": {
     "_artifactsLocation": {
-        "type": "string",
-        "metadata": {
-            "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
-        },
-        "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/iis-2vm-sql-1vm/"
-    },
-      "_artifactsLocationSasToken": {
-          "type": "securestring",
-          "metadata": {
-              "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
-          },
-          "defaultValue": ""
+      "type": "string",
+      "metadata": {
+        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
       },
+      "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/iis-2vm-sql-1vm/"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+      },
+      "defaultValue": ""
+    },
     "envPrefixName": {
       "type": "string",
       "metadata": {
@@ -201,7 +201,7 @@
   },
   "resources": [
     {
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('feNSGName')]",
       "location": "[resourceGroup().location]",
@@ -243,7 +243,7 @@
     },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2015-06-15",
       "name": "[variables('dbNSGName')]",
       "location": "[resourceGroup().location]",
       "tags": {
@@ -311,7 +311,7 @@
       }
     },
     {
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('virtualNetworkName')]",
       "location": "[resourceGroup().location]",
@@ -354,8 +354,8 @@
       "name": "[variables('storageName')]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
-      "apiVersion": "[variables('apiVersion')]",
-      "dependsOn": [ ],
+      "apiVersion": "2015-06-15",
+      "dependsOn": [],
       "tags": {
         "displayName": "StorageForEnv"
       },
@@ -367,7 +367,7 @@
       "name": "[variables('sqlPublicIP')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "location": "[resourceGroup().location]",
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2015-06-15",
       "tags": {
         "displayName": "SqlPIP"
       },
@@ -380,7 +380,7 @@
       "name": "[variables('sqlSrvDBNicName')]",
       "type": "Microsoft.Network/networkInterfaces",
       "location": "[resourceGroup().location]",
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2015-06-15",
       "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
@@ -408,7 +408,7 @@
       "name": "[concat(parameters('envPrefixName'), 'sqlSrv14')]",
       "type": "Microsoft.Compute/virtualMachines",
       "location": "[resourceGroup().location]",
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2015-06-15",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageName'))]",
         "[concat('Microsoft.Network/networkInterfaces/', variables('sqlSrvDBNicName'))]",
@@ -442,7 +442,6 @@
             "createOption": "FromImage"
           }
         },
-
         "networkProfile": {
           "networkInterfaces": [
             {
@@ -455,18 +454,18 @@
     {
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('webSrvAvailabilitySetName')]",
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2015-06-15",
       "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "WebSrvAvailabilitySet"
       },
-      "properties": { }
+      "properties": {}
     },
     {
       "name": "[variables('webSrvPublicIP')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "location": "[resourceGroup().location]",
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2015-06-15",
       "tags": {
         "displayName": "WebSrvPIP for LB"
       },
@@ -479,7 +478,7 @@
       }
     },
     {
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2015-06-15",
       "name": "[variables('webLbName')]",
       "type": "Microsoft.Network/loadBalancers",
       "location": "[resourceGroup().location]",
@@ -569,7 +568,7 @@
       "name": "[concat(variables('webSrvNicName'), copyindex())]",
       "type": "Microsoft.Network/networkInterfaces",
       "location": "[resourceGroup().location]",
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2015-06-15",
       "copy": {
         "name": "nicLoop",
         "count": "[variables('webSrvNumbOfInstances')]"
@@ -600,7 +599,6 @@
                   "id": "[concat(variables('webLbId'),'/inboundNatRules/RDP-VM', copyindex())]"
                 }
               ]
-
             }
           }
         ]
@@ -610,7 +608,7 @@
       "name": "[concat(variables('webSrvName'), copyindex())]",
       "type": "Microsoft.Compute/virtualMachines",
       "location": "[resourceGroup().location]",
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2015-06-15",
       "copy": {
         "name": "webSrvMachineLoop",
         "count": "[variables('webSrvNumbOfInstances')]"
@@ -663,7 +661,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('webSrvName'), copyindex(),'/', variables('vmExtensionName'))]",
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2015-06-15",
       "location": "[resourceGroup().location]",
       "copy": {
         "name": "webSrvMachineLoop",
@@ -685,10 +683,9 @@
           "SasToken": "",
           "ConfigurationFunction": "[variables('configurationFunction')]",
           "wmfVersion": "4.0",
-          "Properties": {
-          }
+          "Properties": {}
         },
-        "protectedSettings": { }
+        "protectedSettings": {}
       }
     }
   ]
